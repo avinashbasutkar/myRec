@@ -1,6 +1,8 @@
 from flask import Flask, render_template, url_for, request, jsonify
 import requests
+import os
 
+api_key = os.getenv('TMDB_API_KEY')
 app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
@@ -14,7 +16,7 @@ def home():
 
         headers = {
             "accept": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1OGMzNzQ5NzQ1Nzg0NzJhOGViZWQ3ODNhZTU5MjYzNiIsIm5iZiI6MTczMDU0NDM3NS43MjQxMDE1LCJzdWIiOiI2MTI3MzhkMGUwNGFjYTAwNDNkYzczOTciLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.f8gopZuW_2myOJcCjqH0W54ARgnMhu2GuikT2JSFq7g"
+            "Authorization": f"Bearer {api_key}"
         }
 
         params = {
