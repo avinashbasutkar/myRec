@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <article class="media content-section">
+        <div class="media-body">
+            <div class="article-metadata">
+                <form method="POST">
+                    <input type="text" id="search-input" name="search_query" placeholder="Enter movie title">
+                    <div class="search-results"></div>
+                </form>
+            </div>
+        </div>
+    </article>
+
+{% endblock content %}
