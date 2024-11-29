@@ -10,8 +10,6 @@ Will be updated soon
 
 ## Technologies Used
 
-Will be updated soon
-
 * **Backend:**
     * Flask
     * Python
