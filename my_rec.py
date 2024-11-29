@@ -1,8 +1,16 @@
 from flask import Flask, render_template, url_for, request, jsonify
 import requests
 import os
+import logging
+from dotenv import load_dotenv
 
-api_key = os.getenv('TMDB_API_KEY')
+# Load the .env file from the current directory
+load_dotenv()
+
+logging.basicConfig(level=logging.DEBUG)
+
+api_key = os.getenv('TMDB_API_READ_ACCESS_TOKEN')
+
 app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
@@ -29,20 +37,16 @@ def home():
             data = response.json()
             return render_template('search_results.html', data=data, title='Search Results', search_query=search_query)
         else:
-            return render_template('error.html')
+            response_status_code = response.status_code
+            logging.error(f"API Request Failed: {response_status_code}")
+            return render_template('error.html', response_status_code=response_status_code)
     else:
         return render_template('home.html')
-    # return render_template('home.html')
 
 @app.route("/search_results")
 def search_results():
     data = request.args.get('data')
     return render_template('search_results.html', data=data, title='Search Results')
-
-# @app.route("/search")
-# def search():
-#     query = request.args.get('query')
-#     return render_template('search_results.html', data=data, title='Search Results')
 
 @app.route("/about")
 def about():
