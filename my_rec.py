@@ -20,7 +20,8 @@ def home():
     if request.method =='POST':
         search_query = request.form['search_query']
 
-        url = "https://api.themoviedb.org/3/search/movie?query={search_query}"
+        movie_details_api_url = "https://api.themoviedb.org/3/search/movie?query={search_query}"
+        configuration_api_url = "https://api.themoviedb.org/3/configuration"
 
         headers = {
             "accept": "application/json",
@@ -31,15 +32,29 @@ def home():
             "query": search_query
         }
 
-        response = requests.get(url, headers=headers, params=params)
+        movie_details_api_response = requests.get(movie_details_api_url, headers=headers, params=params)
+        configuration_api_response = requests.get(configuration_api_url, headers=headers, params=params)
 
-        if response.status_code == 200:
-            data = response.json()
-            return render_template('search_results.html', data=data, title='Search Results', search_query=search_query)
+        if movie_details_api_response.status_code and configuration_api_response.status_code == 200:
+            movie_data = movie_details_api_response.json()
+            configuration_data = configuration_api_response.json()
+
+            # Update this line to retrieve all movie posters
+            movie_poster_path = movie_data['results'][0]['poster_path']
+            image_base_url = configuration_data['images']['base_url']
+
+            if 'w185' in configuration_data['images']['poster_sizes']:
+                movie_poster_size =  'w185'
+            else:
+                movie_poster_size = configuration_data['images']['poster_sizes'][-1]
+
+            movie_poster_full_url = image_base_url + movie_poster_size + movie_poster_path
+
+            return render_template('search_results.html', movie_poster=movie_poster_full_url, title='Search Results', search_query=search_query)
         else:
-            response_status_code = response.status_code
-            logging.error(f"API Request Failed: {response_status_code}")
-            return render_template('error.html', response_status_code=response_status_code)
+            movie_details_api_response_status_code = movie_details_api_response.status_code
+            logging.error(f"Movie Details API Request Failed: {movie_details_api_response_status_code}")
+            return render_template('error.html', response_status_code=movie_details_api_response_status_code)
     else:
         return render_template('home.html')
 
