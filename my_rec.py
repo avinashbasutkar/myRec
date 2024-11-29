@@ -48,9 +48,5 @@ def search_results():
     data = request.args.get('data')
     return render_template('search_results.html', data=data, title='Search Results')
 
-@app.route("/about")
-def about():
-    return render_template('about.html', title='About Us')
-
 if __name__ == '__main__':
     app.run(debug=True)
